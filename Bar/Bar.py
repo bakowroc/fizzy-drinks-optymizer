@@ -1,4 +1,5 @@
 import re
+import time
 
 from RabbitMQ.RabbitMQ import RabbitMQ
 from Store.Store import Store
@@ -16,9 +17,10 @@ class Bar:
         print("Serving {}".format(drink_name))
         self.store.update(drink_name)
 
+
     def read_menu(self):
         return self.store.read()
 
     def start(self):
         print("Bar started working")
-        rabbit.consume(Config.RABBIT.QUEUES['ToBar'], lambda client: self.serve_drink(client))
+        rabbit.consume(Config.RABBIT.QUEUES['ToBar'], lambda client: self.serve_drink(client) & time.sleep(5))
