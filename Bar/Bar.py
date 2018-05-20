@@ -17,7 +17,7 @@ class Bar:
 
     def get_drink_instance(self, drink_name: str) -> (int, Drink):
         for stored_drink in self.store.read():
-            (count, drink) = stored_drink
+            (_, drink) = stored_drink
 
             if drink.name == drink_name:
                 return stored_drink
