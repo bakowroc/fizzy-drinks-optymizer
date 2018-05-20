@@ -29,7 +29,7 @@ orders = [
     },
     {
         'client_name': 'George',
-        'drink': 'Wine'
+        'drink': 'Beer'
     }
 ]
 clients = [

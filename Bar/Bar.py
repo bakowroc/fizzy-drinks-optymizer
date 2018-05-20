@@ -2,6 +2,7 @@ import json
 import time
 
 from Client.Client import Client
+from Drink.Drink import Drink
 from RabbitMQ.RabbitMQ import RabbitMQ
 from Store.Store import Store
 from config.Config import Config
@@ -14,38 +15,34 @@ class Bar:
         self.store = Store()
         self.clients = clients
 
-    def is_able_to_serve(self, drink: str) -> bool:
-        return next((True for stored_drink in self.store.read() if stored_drink[1].name == drink), False)
+    def get_drink_instance(self, drink_name: str) -> (int, Drink):
+        for stored_drink in self.store.read():
+            (count, drink) = stored_drink
+
+            if drink.name == drink_name:
+                return stored_drink
 
     def get_current_client(self, name: str) -> Client:
         return next((client for client in self.clients if client.name == name), None)
 
-    def serve_drink(self, drink: str) -> bool:
-        is_store_has_enough = self.is_able_to_serve(drink)
-
-        if is_store_has_enough:
-            print("Serving {}.".format(drink))
-            self.store.update(drink)
-        else:
-            print("Cannot serve {}. No drinks available".format(drink))
-
-        return is_store_has_enough
+    def serve_drink(self, drink: Drink) -> None:
+        print("Serving {}.".format(drink.name))
+        self.store.update(drink)
 
     def deal_with_client(self, order: bytes) -> None:
         print(15*'-')
-        drink = json.loads(order.decode())['drink']
-        client_name = json.loads(order.decode())['client_name']
+        current_client = self.get_current_client(json.loads(order.decode())['client_name'])
+        (drink_count, drink) = self.get_drink_instance(json.loads(order.decode())['drink'])
 
-        current_client = self.get_current_client(client_name)
-        is_success = self.serve_drink(drink)
-
-        if is_success:
+        if drink_count:
+            self.serve_drink(drink)
             current_client.drink(drink)
         else:
+            print("Cannot serve {}. No drinks available".format(drink.name))
             current_client.start_again()
 
         time.sleep(5)
 
     def start(self) -> None:
         print("Bar started working")
-        rabbit.consume(Config.RABBIT.QUEUES['ToBar'], lambda order: self.deal_with_client(order))
+        rabbit.consume(Config.RABBIT.QUEUES['ToBar'], self.deal_with_client)

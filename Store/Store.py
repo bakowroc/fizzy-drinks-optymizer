@@ -20,8 +20,8 @@ class Store:
         self.drinks_available = list(filter(lambda drink: drink[0] > 0, self.drinks_available))
         return self.drinks_available
 
-    def update(self, drink_name: str) -> None:
+    def update(self, current_drink: Drink) -> None:
         self.drinks_available = list(
-            map(lambda drink: (drink[0] - 1, drink[1]) if drink[1].name == drink_name else drink,
-                self.drinks_available))
-
+            map(lambda drink: (drink[0] - 1, drink[1]) if drink[1].name == current_drink.name else drink,
+                self.drinks_available)
+        )
