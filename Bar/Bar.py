@@ -1,11 +1,14 @@
 import json
 import time
 
+from Store import Store
+
 from Client.Client import Client
 from Drink.Drink import Drink
 from RabbitMQ.RabbitMQ import RabbitMQ
-from Store.Store import Store
+#from Store.Store import Store
 from config.Config import Config
+
 
 rabbit = RabbitMQ()
 
