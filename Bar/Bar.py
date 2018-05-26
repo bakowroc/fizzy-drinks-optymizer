@@ -33,16 +33,18 @@ class Bar:
     def deal_with_client(self, order: bytes) -> None:
         print(15*'-')
         current_client = self.get_current_client(json.loads(order.decode())['client_name'])
-        (drink_count, drink) = self.get_drink_instance(json.loads(order.decode())['drink'])
+        drink_tuple = self.get_drink_instance(json.loads(order.decode())['drink'])
 
-        if drink_count:
+        if drink_tuple and current_client:
+            (_, drink) = drink_tuple
             self.serve_drink(drink)
             current_client.drink(drink)
-        else:
-            print("Cannot serve {}. No drinks available".format(drink.name))
+            print(self.store.read())
+        elif current_client:
+            print("Cannot serve. No drinks available")
             current_client.start_again()
 
-        time.sleep(5)
+        time.sleep(1)
 
     def start(self) -> None:
         print("Bar started working")

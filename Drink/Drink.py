@@ -4,4 +4,3 @@ class Drink:
         self.alcohol = alcohol
         self.volume = volume
         self.drinking_period = drinking_period
-        self.portion_type = None

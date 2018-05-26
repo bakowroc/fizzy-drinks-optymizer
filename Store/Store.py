@@ -1,9 +1,14 @@
 from random import randint
 
 from Drink.Beer import Beer
+from Drink.Brandy import Brandy
 from Drink.Drink import Drink
+from Drink.Gin import Gin
+from Drink.Moonshine import Moonshine
+from Drink.Tequila import Tequila
 from Drink.Vodka import Vodka
-from Drink.Whiskey import Whiskey
+from Drink.Whisky import Whisky
+from Drink.Wine import Wine
 
 
 class Store:
@@ -12,9 +17,9 @@ class Store:
         self.fill()
 
     def fill(self) -> None:
-        drinks = [Beer(), Vodka(), Whiskey()]
+        drinks = [Beer(), Vodka(), Whisky(), Brandy(), Gin(), Moonshine(), Tequila(), Wine()]
         for drink in drinks:
-            self.drinks_available.append((randint(0, 30), drink))
+            self.drinks_available.append((randint(100, 300), drink))
 
     def read(self) -> [(int, Drink)]:
         self.drinks_available = list(filter(lambda drink: drink[0] > 0, self.drinks_available))
