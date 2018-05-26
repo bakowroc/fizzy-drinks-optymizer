@@ -5,49 +5,25 @@ from Client.Client import Client
 from RabbitMQ.RabbitMQ import RabbitMQ
 from Sex.Sex import Sex
 from config.Config import Config
+from Store.Store import Store
+
+store = Store()
+
 
 rabbit = RabbitMQ()
-orders = [
-    {
-        'client_name': 'John',
-        'drink': 'Vodka'
-    },
-    {
-        'client_name': 'Jim',
-        'drink': 'Whiskey'
-    },
-    {
-        'client_name': 'Jerry',
-        'drink': 'Beer'
-    },
-    {
-        'client_name': 'Johhny',
-        'drink': 'Vodka'
-    },
-    {
-        'client_name': 'Jimmy',
-        'drink': 'Vodka'
-    },
-    {
-        'client_name': 'George',
-        'drink': 'Beer'
-    }
-]
+
 clients = [
-    Client('John', Sex.Male, 75),
-    Client('Karina', Sex.Female, 190),
-    Client('Johhny', Sex.Male, 45),
-    Client('Jerry', Sex.Male, 75),
-    Client('Jim', Sex.Male, 69),
-    Client('George', Sex.Male, 140)
+    Client('John', Sex.Male, 75, store),
+    Client('Karina', Sex.Female, 190, store),
+    Client('Johhny', Sex.Male, 45, store),
+    Client('Jerry', Sex.Male, 75, store),
+    Client('Jim', Sex.Male, 69, store),
+    Client('George', Sex.Male, 140, store)
 ]
 
 
 def main():
-    for order in orders:
-        rabbit.publish(json.dumps(order), Config.RABBIT.QUEUES['ToBar'])
-
-    bar = Bar(clients)
+    bar = Bar(clients, store)
     bar.start()
 
 

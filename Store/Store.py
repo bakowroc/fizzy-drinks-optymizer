@@ -19,7 +19,7 @@ class Store:
     def fill(self) -> None:
         drinks = [Beer(), Vodka(), Whisky(), Brandy(), Gin(), Moonshine(), Tequila(), Wine()]
         for drink in drinks:
-            self.drinks_available.append((randint(100, 300), drink))
+            self.drinks_available.append((randint(1, 30), drink))
 
     def read(self) -> [(int, Drink)]:
         self.drinks_available = list(filter(lambda drink: drink[0] > 0, self.drinks_available))

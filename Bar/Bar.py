@@ -11,8 +11,8 @@ rabbit = RabbitMQ()
 
 
 class Bar:
-    def __init__(self, clients: [Client]):
-        self.store = Store()
+    def __init__(self, clients: [Client], store: Store):
+        self.store = store
         self.clients = clients
 
     def get_drink_instance(self, drink_name: str) -> (int, Drink):
@@ -27,7 +27,6 @@ class Bar:
 
     def serve_drink(self, drink: Drink) -> None:
         print("Serving {}.".format(drink.name))
-        print(self.store.read())
         self.store.update(drink)
 
     def deal_with_client(self, order: bytes) -> None:
@@ -39,7 +38,6 @@ class Bar:
             (_, drink) = drink_tuple
             self.serve_drink(drink)
             current_client.drink(drink)
-            print(self.store.read())
         elif current_client:
             print("Cannot serve. No drinks available")
             current_client.start_again()
