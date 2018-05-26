@@ -3,6 +3,7 @@ import json
 from Bar.Bar import Bar
 from Client.Client import Client
 from RabbitMQ.RabbitMQ import RabbitMQ
+from Sex.Sex import Sex
 from config.Config import Config
 
 rabbit = RabbitMQ()
@@ -33,12 +34,12 @@ orders = [
     }
 ]
 clients = [
-    Client('John'),
-    Client('Jimmy'),
-    Client('Johhny'),
-    Client('Jerry'),
-    Client('Jim'),
-    Client('George')
+    Client('John', Sex.Male, 75),
+    Client('Karina', Sex.Female, 190),
+    Client('Johhny', Sex.Male, 45),
+    Client('Jerry', Sex.Male, 75),
+    Client('Jim', Sex.Male, 69),
+    Client('George', Sex.Male, 140)
 ]
 
 

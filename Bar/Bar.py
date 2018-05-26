@@ -27,6 +27,7 @@ class Bar:
 
     def serve_drink(self, drink: Drink) -> None:
         print("Serving {}.".format(drink.name))
+        print(self.store.read())
         self.store.update(drink)
 
     def deal_with_client(self, order: bytes) -> None:
