@@ -1,5 +1,4 @@
 import json
-import time
 
 from Client.Client import Client
 from Drink.Drink import Drink
@@ -26,11 +25,10 @@ class Bar:
         return next((client for client in self.clients if client.name == name), None)
 
     def serve_drink(self, drink: Drink) -> None:
-        print("Serving {}.".format(drink.name))
+        # print("Serving {}.".format(drink.name))
         self.store.update(drink)
 
     def deal_with_client(self, order: bytes) -> None:
-        print(15*'-')
         current_client = self.get_current_client(json.loads(order.decode())['client_name'])
         drink_tuple = self.get_drink_instance(json.loads(order.decode())['drink'])
 
@@ -39,10 +37,10 @@ class Bar:
             self.serve_drink(drink)
             current_client.drink(drink)
         elif current_client:
-            print("Cannot serve. No drinks available")
-            current_client.start_again()
+            # print("Cannot serve. No drinks available")
+            current_client.start_over()
 
-        time.sleep(1)
+        #time.sleep(1)
 
     def start(self) -> None:
         print("Bar started working")
