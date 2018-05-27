@@ -57,6 +57,8 @@ class Client(Thread):
 
     def open_menu(self):
         self.is_reading = True
+        time.sleep(AVG_READING_TIME)
+
         # print('{} is reading menu.'.format(self.name))
         drink_tuple = self.choose_drink()
 
@@ -74,7 +76,6 @@ class Client(Thread):
         else:
             self.cant_drinks.append(drink.name)
 
-        time.sleep(AVG_READING_TIME)
         self.is_reading = False
 
     def choose_drink(self):

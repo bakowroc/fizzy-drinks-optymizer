@@ -1,4 +1,5 @@
 import json
+import time
 
 from Client.Client import Client
 from Drink.Drink import Drink
@@ -29,6 +30,7 @@ class Bar:
         self.store.update(drink)
 
     def deal_with_client(self, order: bytes) -> None:
+        time.sleep(1)
         current_client = self.get_current_client(json.loads(order.decode())['client_name'])
         drink_tuple = self.get_drink_instance(json.loads(order.decode())['drink'])
 
@@ -39,8 +41,6 @@ class Bar:
         elif current_client:
             # print("Cannot serve. No drinks available")
             current_client.start_over()
-
-        #time.sleep(1)
 
     def start(self) -> None:
         print("Bar started working")

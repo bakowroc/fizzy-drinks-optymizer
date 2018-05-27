@@ -10,12 +10,14 @@ store = Store()
 rabbit = RabbitMQ()
 
 clients = [
-    Client('John', Sex.Male, 75, 0.2, store),
-    Client('Karina', Sex.Female, 190, 0.7, store),
-    Client('Johhny', Sex.Male, 45, 0.4, store),
-    Client('Jerry', Sex.Male, 75, 0.6, store),
-    Client('Jim', Sex.Male, 69, 0.5, store),
-    Client('George', Sex.Male, 140, 0.15, store)
+    Client('Abdul', Sex.Male, 86, 0.154, store),
+    Client('Berry', Sex.Female, 79, 0.43, store),
+    Client('Kate', Sex.Male, 45, 0.42, store),
+    Client('Matthew', Sex.Male, 75, 0.12, store),
+    Client('Fender', Sex.Male, 69, 0.33, store),
+    Client('Fabric', Sex.Female, 140, 0.124, store),
+    Client('Bill', Sex.Male, 75, 0.233, store),
+    Client('Bohdan', Sex.Female, 190, 0.124, store)
 ]
 
 
