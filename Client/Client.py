@@ -13,7 +13,14 @@ rabbit = RabbitMQ()
 AVG_READING_TIME = 1
 
 
+
 class Client(Thread):
+    #elapsed_time = time.time()
+    Sobering_timer_trigger = 1 # 1 jednostka = 1s
+    SOBER_RATE_PER_HOUR = 0.016
+
+    sober_update_rate = SOBER_RATE_PER_HOUR *Sobering_timer_trigger/3600
+
     def __init__(self, name, sex: Sex, weight, ebac_goal, store: Store):
         super(Client, self).__init__()
         self.daemon = True
@@ -23,8 +30,11 @@ class Client(Thread):
         self.is_in_queue = False
         self.is_reading = False
         self.drinking_start_time = 0
-        self.non_drinking_period = time.time()
-
+        self.last_drinking_time: time = time.time()
+        self.non_drinking_period = 0
+        self.sobering_last_update_time = time.time()
+        self.start_time = time.time()
+        self.elapsed_time = self.start_time
         self.name = name
         self.sex = sex
         self.weight = weight
@@ -33,13 +43,42 @@ class Client(Thread):
 
         self.start()
 
+    @property
+    def non_drinking_period(self):
+        return "Non drink period: "+str(time.time() - self.last_drinking_time)
+
+    @non_drinking_period.setter
+    def non_drinking_period(self, value):
+        return time.time() - self.last_drinking_time
+    @property
+    def elapsed_time(self):
+        return time.time() - self.start_time
+
+    @elapsed_time.setter
+    def elapsed_time(self, value):
+        """
+         Zabezpieczenie przed zmiana
+        :param value:
+        :return:
+        """
+        #self.elapsed_time = time.time() - self.start_time
+        return self.elapsed_time
+
     def run(self):
         self.drinking_start_time = time.time()
 
         while not self.cancelled:
+            time.sleep(1)
+            self.sobering()
             # here is sobering if ebac > 0 ofc
             if not self.is_in_queue and not self.is_reading:
                 self.open_menu()
+
+    def sobering(self):
+        if (time.time() - self.sober_update_rate) >= Client.Sobering_timer_trigger:
+            self.ebac -= Client.sober_update_rate
+            self.sober_update_rate = time.time()
+            print("NO OK SPRAWDZAMY\n NON DRINKING PERIOD: {}\n sober_update_rate: {}\n Elapsed_time: {}\n".format(self.non_drinking_period, self.sober_update_rate, self.elapsed_time))
 
     def start_over(self):
         self.is_in_queue = False
@@ -47,10 +86,12 @@ class Client(Thread):
 
     def drink(self, drink):
         self.ebac += Ebac(self, drink).get_ebac()
-        self.non_drinking_period = time.time() - self.non_drinking_period # TODO cos to gowno zwraca jakis syf
+
+        self.last_drinking_time = time.time()
+        time.sleep(drink.drinking_period)
         # print('{} drank.'.format(self.name))
         self.is_in_queue = False
-        time.sleep(drink.drinking_period)
+
 
     def may_i_drink(self, drink):
         return not self.ebac + Ebac(self, drink).get_ebac() >= self.ebac_goal
