@@ -47,13 +47,15 @@ class BarWorker:
         self.bar_thread.start()
 
     def run_task(self):
-
+        print("CONSUMER THREAD")
         while True:
             if self.Ebac_Manager.time_expired_event.isSet():
+                print("CONS_TH_END")
                 return
-
-            if self.Ebac_Manager.can_consume_queue.isSet():
-                pass
+            #print("CONSUMER_TH_CHP1")
+            self.Ebac_Manager.can_consume_queue.wait()
+            print("CONSUMER_TH_CHP2")
+            self.serving_bar.serve_alcohol()
 
 
 
@@ -78,17 +80,17 @@ class EbacEventWorker:
             for client in self.Ebac_Manager.clients:
                 client.metabolize(KWANT_CZASU_TRZEZWIENIA*(time.time() - curr_time))
                 choice = client.can_i_drink()
-                if choice[0] > 0.6 and not self.Ebac_Manager.can_overdose:
+                if choice[0] > 0.9 and not self.Ebac_Manager.can_overdose:
                     pass
                 else:
                     self.Ebac_Manager.bar_queue.append((client, choice))
                     self.Ebac_Manager.can_consume_queue.set()
                 time.sleep(1)
 
-                print("KLIENT: {} ".format(client.ebac))
+               # print("KLIENT: {} ".format(client.ebac))
 
-            print("CZAS: {} \n\n\n".format((time.time() - curr_time)% 100))
-            print("KOLEJKA to: {}\n\n\n".format(self.Ebac_Manager.bar_queue))
+            #print("CZAS: {} \n\n\n".format((time.time() - curr_time)% 100))
+            #print("KOLEJKA to: {}\n\n\n".format(self.Ebac_Manager.bar_queue))
             time.sleep(5)
             self.Ebac_Manager.time_expired_event.wait(self._interval)
 

@@ -70,7 +70,8 @@ class Bar:
 
     def check_if_store_empty(self):
         for drink in self.store.read():
-            if drink[0]:
+            if not drink[0]:
+                #print("CHECKSTORE_CHP ",drink[0])
                 return False  # cos tam jest
 
     def get_drink_tuple(self, drink_name: str) -> (int, Drink):
@@ -80,6 +81,12 @@ class Bar:
                 return stored_drink
 
     def serve_alcohol(self):
+        #print("the store is :", self.store.read())
+        #print("serv_chp1")
+        if not self.clients:
+            print("Queue is", self.clients)
+            return
+        #print("serv_chp2. THE QUEUE IS", self.clients)
         elem = self.clients.pop(0)
         client, drink_to_get = elem[0], elem[1]
         drink = self.get_drink_tuple(drink_to_get)
@@ -90,4 +97,5 @@ class Bar:
         else:
             if not self.check_if_store_empty():
                 #wypierdol programm
-                print("STORE IS EMPTY TIME TO SOBER UP")
+                #print("STORE IS EMPTY TIME TO SOBER UP:::::", self.store.read())
+                pass

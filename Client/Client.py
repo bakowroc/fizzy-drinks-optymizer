@@ -9,7 +9,7 @@ from config.Config import Config
 
 rabbit = RabbitMQ()
 
-HARD_CODED_EBAC_DESTINATION_VALUE = 0.6
+HARD_CODED_EBAC_DESTINATION_VALUE = 0.9
 INFINITY = 99999999
 
 class Client:
@@ -34,7 +34,7 @@ class Client:
 
     def can_i_drink(self):
         store_content = self.drinks_i_can_drink()
-        print(store_content)
+        #print(store_content)
 
         choice = self.choose_best_drink(store_content)
         print("best choice is:",choice)

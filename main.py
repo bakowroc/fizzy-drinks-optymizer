@@ -42,10 +42,11 @@ def main():
     ebm =  EbacManager(Lock(), ClientList, Event(), 15, store)
     ebm.bar_worker.run()
     ebm.ebac_worker.run()
-    time.sleep(5)
+    time.sleep(10)
     print("DUPA PRINT1")
     ebm.shutdown()
     print("DUPA PRINT2")
+    print(ebm.bar_queue)
 
 if __name__ == "__main__":
     main()
