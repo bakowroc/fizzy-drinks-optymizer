@@ -66,8 +66,7 @@ class Client(Thread):
             (_, drink) = drink_tuple
         else:
             # JAKIES OUTPUTY / INFO O KLIENCIE GDY JUZ SKONCZYL (Z ROZNYCH POWODOW) TYPU EBAC, DRINKI WYPITE, CZASY ITD
-            print('\033[92mAfter {} {} is going home\033[0m. Non-drinking period: {}'.format(
-                time.time() - self.drinking_start_time, self.name, self.non_drinking_period))
+            self.print_result()
             return
 
         if self.may_i_drink(drink):
@@ -90,3 +89,10 @@ class Client(Thread):
             return
         else:
             return store_i_can_access[randint(0, len(store_i_can_access) - 1)]
+
+    def print_result(self):
+        print('\033[92mAfter {} {} is going home\033[0m.'.format(time.time() - self.drinking_start_time, self.name))
+        print('Non-drinking period: {}'.format(self.non_drinking_period))
+        print('Final EBAC value: {}'.format(self.ebac))
+        print('Is satisfied: {}'.format(self.ebac > 0.85 * self.ebac_goal)) #TODO fajnie by zrobic czy zawiera sie w przedziale z wikipedii. Wtedy jako parametr nie wpadalaby liczba (ebac_goal) tylko konkretny enum
+        print(50 * '=')
