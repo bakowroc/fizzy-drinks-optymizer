@@ -26,3 +26,4 @@ class Ebac:
         ebac_value = (((0.806 * self.get_standard_drink() * 1.2) / (
                     self.BW * self.client.weight)) - self.MR * self.drink.drinking_period)
         return ebac_value
+
