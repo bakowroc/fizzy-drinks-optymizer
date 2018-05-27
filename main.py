@@ -39,6 +39,8 @@ def main():
         Client('George', Sex.Male, 140, store)
     ]
 
+    for c in ClientList:
+        print(c.ebac)
     ebm =  EbacManager(Lock(), ClientList, Event(), 15, store)
     ebm.bar_worker.run()
     ebm.ebac_worker.run()
@@ -47,6 +49,8 @@ def main():
     ebm.shutdown()
     print("DUPA PRINT2")
     print(ebm.bar_queue)
+    for c in ebm.clients:
+        print(c.ebac)
 
 if __name__ == "__main__":
     main()

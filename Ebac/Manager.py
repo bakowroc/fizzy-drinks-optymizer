@@ -47,15 +47,20 @@ class BarWorker:
         self.bar_thread.start()
 
     def run_task(self):
-        print("CONSUMER THREAD")
+        #print("CONSUMER THREAD")
         while True:
             if self.Ebac_Manager.time_expired_event.isSet():
-                print("CONS_TH_END")
+                #print("CONS_TH_END")
                 return
             #print("CONSUMER_TH_CHP1")
             self.Ebac_Manager.can_consume_queue.wait()
-            print("CONSUMER_TH_CHP2")
-            self.serving_bar.serve_alcohol()
+            #print("CONSUMER_TH_CHP2")
+            x = self.serving_bar.serve_alcohol()
+            if x is None:
+                pass
+                #print("bar is empty")
+            else:
+                print("Client: {}\n drink: {}".format(x[0], x[1]))
 
 
 

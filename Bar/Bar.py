@@ -32,7 +32,7 @@ class Bar:
     def get_drink_instance(self, drink_name: str) -> (int, Drink):
         for stored_drink in self.store.read():
             (_, drink) = stored_drink
-
+            print("drink to", drink)
             if drink.name == drink_name:
                 return stored_drink
 
@@ -76,26 +76,34 @@ class Bar:
 
     def get_drink_tuple(self, drink_name: str) -> (int, Drink):
         for stored_drink in self.store.read():
-            #(_, drink) = stored_drink
+            (_, drink) = stored_drink
+           # print("drink to:" ,stored_drink)
+            print("chce otrzymac: {}\n mam : {}".format(stored_drink[1].name, drink_name))
             if stored_drink[1].name == drink_name:
+                print("stored drink to return", stored_drink)
                 return stored_drink
 
     def serve_alcohol(self):
         #print("the store is :", self.store.read())
         #print("serv_chp1")
         if not self.clients:
-            print("Queue is", self.clients)
+            #print("Queue is", self.clients)
             return
         #print("serv_chp2. THE QUEUE IS", self.clients)
         elem = self.clients.pop(0)
-        client, drink_to_get = elem[0], elem[1]
-        drink = self.get_drink_tuple(drink_to_get)
-
+        client, drink_to_get_tuple = elem[0], elem[1]
+        ebac, drink_and_count = drink_to_get_tuple
+        print("drink to GET CHP123",drink_and_count[1].name)
+        drink = self.get_drink_tuple(drink_and_count[1].name)
+        print("CHP DRINK IS UP")
+        print(Client)
+        print(drink)
         if drink:
             client.drink(drink[1])
-            self.serve_drink()
+            self.serve_drink(drink[1])
+            return drink, client
         else:
             if not self.check_if_store_empty():
                 #wypierdol programm
                 #print("STORE IS EMPTY TIME TO SOBER UP:::::", self.store.read())
-                pass
+                return None

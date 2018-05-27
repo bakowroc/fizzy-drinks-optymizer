@@ -15,7 +15,7 @@ INFINITY = 99999999
 class Client:
     def __init__(self, name, sex: Sex, weight, store: Store):
         self.name = name
-        self.ebac = 0.5
+        self.ebac = 0.2
         self.sex = sex
         self.weight = weight
         self.store = store
