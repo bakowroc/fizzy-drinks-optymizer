@@ -11,12 +11,12 @@ rabbit = RabbitMQ()
 
 clients = [
     Client('Abdul', Sex.Male, 86, Level.DEATH, store, rabbit),
-    Client('Berry', Sex.Female, 79, Level.EMO_SWINGS, store, rabbit),
+    Client('Berry', Sex.Female, 79, Level.DEATH, store, rabbit),
     Client('Kate', Sex.Male, 45, Level.EUPHORIA, store, rabbit),
     Client('Matthew', Sex.Male, 75, Level.NORMAL, store, rabbit),
     Client('Fender', Sex.Male, 69, Level.OVER_EXP, store, rabbit),
     Client('Fabric', Sex.Female, 140, Level.STUPOR, store, rabbit),
-    Client('Bill', Sex.Male, 75, Level.TALKATIVE, store, rabbit),
+    Client('Bill', Sex.Male, 75, Level.DEATH, store, rabbit),
     Client('Bohdan', Sex.Female, 190, Level.COMA, store, rabbit)
 ]
 

@@ -11,7 +11,7 @@ from Store.Store import Store
 from config.Config import Config
 import matplotlib.pyplot as pplot
 rabbit = RabbitMQ()
-AVG_READING_TIME = 1
+AVG_READING_TIME = 0.05
 Sobering_timer_trigger = 1 # 1 jednostka = 1s
 SOBER_RATE_PER_HOUR = 0.016
 sober_update_rate = SOBER_RATE_PER_HOUR *Sobering_timer_trigger/3600
@@ -72,7 +72,7 @@ class Client(Thread):
                 self.sobering()
             if not self.is_in_queue and not self.is_reading:
                 self.open_menu()
-            self.update_dataset()
+                self.update_dataset()
 
     def sobering(self):
         if (time.time() - self.sober_update_rate) >= Sobering_timer_trigger:

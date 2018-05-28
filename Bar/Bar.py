@@ -36,7 +36,7 @@ class Bar:
             Client.draw()
             exit(0)
 
-        time.sleep(1)
+        time.sleep(0.01)
         current_client = self.get_current_client(json.loads(order.decode())['client_name'])
         drink_tuple = self.get_drink_instance(json.loads(order.decode())['drink'])
 
@@ -60,4 +60,3 @@ class Bar:
     def start(self) -> None:
         print("Bar started working")
         rabbit.consume(Config.RABBIT.QUEUES['ToBar'], self.deal_with_client)
-        time.sleep(5)
