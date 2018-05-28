@@ -4,17 +4,17 @@ from random import randint
 from threading import Thread
 
 from Ebac.Ebac import Ebac
+from Ebac.Levels import Level
 from RabbitMQ.RabbitMQ import RabbitMQ
 from Sex.Sex import Sex
 from Store.Store import Store
 from config.Config import Config
 
-rabbit = RabbitMQ()
 AVG_READING_TIME = 1
 
 
 class Client(Thread):
-    def __init__(self, name, sex: Sex, weight, ebac_goal, store: Store):
+    def __init__(self, name, sex: Sex, weight, ebac_goal, store: Store, rabbit: RabbitMQ):
         super(Client, self).__init__()
         self.daemon = True
         self.cancelled = False
@@ -23,13 +23,16 @@ class Client(Thread):
         self.is_in_queue = False
         self.is_reading = False
         self.drinking_start_time = 0
-        self.non_drinking_period = time.time()
+        self.last_time_drink = 0
+        self.non_drinking_period = 0
+        self.start_non_drinking = 0
 
         self.name = name
         self.sex = sex
         self.weight = weight
         self.ebac_goal = ebac_goal
         self.store = store
+        self.rabbit = rabbit
 
         self.start()
 
@@ -47,16 +50,18 @@ class Client(Thread):
 
     def drink(self, drink):
         self.ebac += Ebac(self, drink).get_ebac()
-        self.non_drinking_period = time.time() - self.non_drinking_period # TODO cos to gowno zwraca jakis syf
+        self.last_time_drink = time.time()
+        self.non_drinking_period += time.time() - self.start_non_drinking
         # print('{} drank.'.format(self.name))
         self.is_in_queue = False
         time.sleep(drink.drinking_period)
 
     def may_i_drink(self, drink):
-        return not self.ebac + Ebac(self, drink).get_ebac() >= self.ebac_goal
+        return not self.ebac + Ebac(self, drink).get_ebac() >= self.ebac_goal[1]
 
     def open_menu(self):
         self.is_reading = True
+        self.start_non_drinking = time.time()
         time.sleep(AVG_READING_TIME)
 
         # print('{} is reading menu.'.format(self.name))
@@ -70,7 +75,7 @@ class Client(Thread):
             return
 
         if self.may_i_drink(drink):
-            rabbit.publish(json.dumps({'client_name': self.name, 'drink': drink.name}), Config.RABBIT.QUEUES['ToBar'])
+            self.rabbit.publish(json.dumps({'client_name': self.name, 'drink': drink.name}), Config.RABBIT.QUEUES['ToBar'])
             self.is_in_queue = True
         else:
             self.cant_drinks.append(drink.name)
@@ -94,5 +99,5 @@ class Client(Thread):
         print('\033[92mAfter {} {} is going home\033[0m.'.format(time.time() - self.drinking_start_time, self.name))
         print('Non-drinking period: {}'.format(self.non_drinking_period))
         print('Final EBAC value: {}'.format(self.ebac))
-        print('Is satisfied: {}'.format(self.ebac > 0.85 * self.ebac_goal)) #TODO fajnie by zrobic czy zawiera sie w przedziale z wikipedii. Wtedy jako parametr nie wpadalaby liczba (ebac_goal) tylko konkretny enum
+        print('Is satisfied: {}'.format(self.ebac_goal[1] > self.ebac > self.ebac_goal[0]))
         print(50 * '=')
