@@ -12,8 +12,10 @@ from config.Config import Config
 import matplotlib.pyplot as pplot
 rabbit = RabbitMQ()
 AVG_READING_TIME = 1
-
-
+Sobering_timer_trigger = 1 # 1 jednostka = 1s
+SOBER_RATE_PER_HOUR = 0.016
+sober_update_rate = SOBER_RATE_PER_HOUR *Sobering_timer_trigger/3600
+Upper_limit = 999999999
 
 class Client(Thread):
     dataset = {}
@@ -77,7 +79,6 @@ class Client(Thread):
             self.ebac -= sober_update_rate
             self.sober_update_rate = time.time()
 
-
     def start_over(self, store_status):
         self.is_in_queue = False
         self.is_reading = False
@@ -87,11 +88,11 @@ class Client(Thread):
             #self.runtime_condition.set()
 
     def drink(self, drink):
+        self.is_in_queue = False
+        time.sleep(drink.drinking_period)
         self.ebac += Ebac(self, drink).get_ebac()
         self.last_time_drink = time.time()
         self.non_drinking_period += time.time() - self.start_non_drinking
-        self.is_in_queue = False
-        time.sleep(drink.drinking_period)
 
     def calculate_ebac_for_drink(self, drink):
         return self.ebac + Ebac(self, drink).get_ebac()
@@ -104,16 +105,14 @@ class Client(Thread):
         self.start_non_drinking = time.time()
         time.sleep(AVG_READING_TIME)
 
-        if  self.optimized:
+        if self.optimized:
             drink_tuple = self.choose_drink()
         else:
             dest_ebac, drink_tuple = self.choose_best_drink()
-        # co robiny z dest_ebac?
 
         if drink_tuple is not None:
             (_, drink) = drink_tuple
         else:
-            # JAKIES OUTPUTY / INFO O KLIENCIE GDY JUZ SKONCZYL (Z ROZNYCH POWODOW) TYPU EBAC, DRINKI WYPITE, CZASY ITD
             self.print_result()
             return
 
@@ -134,13 +133,12 @@ class Client(Thread):
 
         if len(store_i_can_access) is 0:
             self.cancelled = True
-            #self.runtime_condition.set()
             return
         else:
             return store_i_can_access[randint(0, len(store_i_can_access) - 1)]
 
     def choose_best_drink(self):
-        min = Client.Upper_limit
+        min = Upper_limit
         best_drink = None
         final_ebac = 0
 
@@ -152,12 +150,11 @@ class Client(Thread):
 
         if len(store_i_can_access) is 0:
             self.cancelled = True
-            #self.runtime_condition.set()
             return
 
         for drink_tuple in store_i_can_access:
-            diff = Client.Ebac_goal - self.calculate_ebac_for_drink(drink_tuple[1])
-            if diff < 0 and not Client.CAN_OVERDOSE:
+            diff = self.ebac_goal[1] - self.calculate_ebac_for_drink(drink_tuple[1])
+            if diff < 0:
                 break
             elif abs(diff) < min:
                 final_ebac, best_drink = abs(diff), drink_tuple
@@ -171,19 +168,19 @@ class Client(Thread):
         print('Is satisfied: {}'.format(self.ebac_goal[1] > self.ebac > self.ebac_goal[0]))
         print(50 * '=')
 
-    def draw(self):
+    @classmethod
+    def draw(cls):
         pplot.xlabel("time")
         pplot.ylabel("EBAC")
         pplot.title("EBAC chart")
+        pplot.figure(figsize=(2, 2))
 
         els = list()
         for key,value in Client.dataset.items():
             els.append(list(map(list, zip(*value))))
 
-
-        print"\n\n\n\nELEMENTY"(els)
         for i in range(len(els)):
-            pplot.plot([pt[1] for pt in els][i], [pt[0] for pt in els][i])
+            pplot.plot([pt[0] for pt in els][i], [pt[1] for pt in els][i])
 
         pplot.legend()
         pplot.show()

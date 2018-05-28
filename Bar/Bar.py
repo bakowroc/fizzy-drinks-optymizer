@@ -32,7 +32,8 @@ class Bar:
 
     def deal_with_client(self, order: bytes) -> None:
         if 'message' in json.loads(order.decode()) is not None:
-            #ykresiki
+            print('Drawing chart')
+            Client.draw()
             exit(0)
 
         time.sleep(1)
