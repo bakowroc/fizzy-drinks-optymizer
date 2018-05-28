@@ -76,8 +76,9 @@ class Client(Thread):
 
     def sobering(self):
         if (time.time() - self.sober_update_rate) >= Sobering_timer_trigger:
-            self.ebac -= sober_update_rate
-            self.sober_update_rate = time.time()
+            if sober_update_rate < self.ebac:
+                self.ebac -= sober_update_rate
+                self.sober_update_rate = time.time()
 
     def start_over(self, store_status):
         self.is_in_queue = False
