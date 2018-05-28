@@ -11,6 +11,9 @@ from Store.Store import Store
 from config.Config import Config
 
 AVG_READING_TIME = 1
+Sobering_timer_trigger = 1  # 1 jednostka = 1s
+SOBER_RATE_PER_HOUR = 0.016
+sober_update_rate = SOBER_RATE_PER_HOUR * Sobering_timer_trigger / 3600
 
 
 class Client(Thread):
@@ -22,10 +25,12 @@ class Client(Thread):
         self.cant_drinks = []
         self.is_in_queue = False
         self.is_reading = False
+
         self.drinking_start_time = 0
         self.last_time_drink = 0
         self.non_drinking_period = 0
         self.start_non_drinking = 0
+        self.sober_update_rate = 0
 
         self.name = name
         self.sex = sex
@@ -36,13 +41,34 @@ class Client(Thread):
 
         self.start()
 
+    @property
+    def elapsed_time(self):
+        return time.time() - self.drinking_start_time
+
+    @elapsed_time.setter
+    def elapsed_time(self, value):
+        """
+         Zabezpieczenie przed zmiana
+        :param value:
+        :return:
+        """
+        # self.elapsed_time = time.time() - self.start_time
+        return self.elapsed_time
+
     def run(self):
         self.drinking_start_time = time.time()
 
         while not self.cancelled:
-            # here is sobering if ebac > 0 ofc
+            if self.ebac is not 0:
+                self.sobering()
+
             if not self.is_in_queue and not self.is_reading:
                 self.open_menu()
+
+    def sobering(self):
+        if (time.time() - self.sober_update_rate) >= Sobering_timer_trigger:
+            self.ebac -= sober_update_rate
+            self.sober_update_rate = time.time()
 
     def start_over(self):
         self.is_in_queue = False
@@ -96,7 +122,7 @@ class Client(Thread):
             return store_i_can_access[randint(0, len(store_i_can_access) - 1)]
 
     def print_result(self):
-        print('\033[92mAfter {} {} is going home\033[0m.'.format(time.time() - self.drinking_start_time, self.name))
+        print('\033[92mAfter {} {} is going home\033[0m.'.format(self.elapsed_time, self.name))
         print('Non-drinking period: {}'.format(self.non_drinking_period))
         print('Final EBAC value: {}'.format(self.ebac))
         print('Is satisfied: {}'.format(self.ebac_goal[1] > self.ebac > self.ebac_goal[0]))
