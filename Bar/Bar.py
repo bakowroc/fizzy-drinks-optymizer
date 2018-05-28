@@ -14,6 +14,7 @@ class Bar:
     def __init__(self, clients: [Client], store: Store):
         self.store = store
         self.clients = clients
+        self.runtime_flag: bool = True
 
     def get_drink_instance(self, drink_name: str) -> (int, Drink):
         for stored_drink in self.store.read():
@@ -40,8 +41,18 @@ class Bar:
             current_client.drink(drink)
         elif current_client:
             # print("Cannot serve. No drinks available")
-            current_client.start_over()
+            current_client.start_over(self.store.is_empty())
+
+        self.runtime_flag = False
+
+        for client in self.clients:
+            if client.cancelled is False:
+                self.runtime_flag = True
+
+        if not self.runtime_flag:
+            rabbit.channel.basic_cancel('')
 
     def start(self) -> None:
         print("Bar started working")
         rabbit.consume(Config.RABBIT.QUEUES['ToBar'], self.deal_with_client)
+        time.sleep(5)

@@ -30,3 +30,10 @@ class Store:
             map(lambda drink: (drink[0] - 1, drink[1]) if drink[1].name == current_drink.name else drink,
                 self.drinks_available)
         )
+
+    def is_empty(self):
+        for drink_type in self.drinks_available:
+            if drink_type[0] is 0:
+                return True
+
+        return False

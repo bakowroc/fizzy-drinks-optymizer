@@ -21,7 +21,7 @@ class RabbitMQ:
         self.channel.queue_declare(queue_name)
         self.channel.basic_publish(exchange='', routing_key=queue_name, body=body)
 
-    def consume(self, queue_name: str, interpreter: lambda: str):
+    def consume(self, queue_name: str, interpreter: lambda: str, ):
         callback = lambda ch, method, properties, body: self.callback(method, body, interpreter)
 
         self.channel.queue_declare(queue_name)
