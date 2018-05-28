@@ -1,27 +1,28 @@
 from Bar.Bar import Bar
+from Cancer.Cancer import Cancer
 from Client.Client import Client
+from Ebac.Levels import Level
 from RabbitMQ.RabbitMQ import RabbitMQ
 from Sex.Sex import Sex
 from Store.Store import Store
 
 store = Store()
-
-
 rabbit = RabbitMQ()
 
 clients = [
-    Client('Abdul', Sex.Male, 86, 0.154, store),
-    Client('Berry', Sex.Female, 79, 0.43, store),
-    Client('Kate', Sex.Male, 45, 0.42, store),
-    Client('Matthew', Sex.Male, 75, 0.12, store),
-    Client('Fender', Sex.Male, 69, 0.33, store),
-    Client('Fabric', Sex.Female, 140, 0.124, store),
-    Client('Bill', Sex.Male, 75, 0.233, store),
-    Client('Bohdan', Sex.Female, 190, 0.124, store)
+    Client('Abdul', Sex.Male, 86, Level.DEATH, store, rabbit),
+    Client('Berry', Sex.Female, 79, Level.EMO_SWINGS, store, rabbit),
+    Client('Kate', Sex.Male, 45, Level.EUPHORIA, store, rabbit),
+    Client('Matthew', Sex.Male, 75, Level.NORMAL, store, rabbit),
+    Client('Fender', Sex.Male, 69, Level.OVER_EXP, store, rabbit),
+    Client('Fabric', Sex.Female, 140, Level.STUPOR, store, rabbit),
+    Client('Bill', Sex.Male, 75, Level.TALKATIVE, store, rabbit),
+    Client('Bohdan', Sex.Female, 190, Level.COMA, store, rabbit)
 ]
 
 
 def main():
+    Cancer(clients, rabbit).start()
     bar = Bar(clients, store)
     bar.start()
 

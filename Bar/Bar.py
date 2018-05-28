@@ -31,6 +31,10 @@ class Bar:
         self.store.update(drink)
 
     def deal_with_client(self, order: bytes) -> None:
+        if 'message' in json.loads(order.decode()) is not None:
+            #ykresiki
+            exit(0)
+
         time.sleep(1)
         current_client = self.get_current_client(json.loads(order.decode())['client_name'])
         drink_tuple = self.get_drink_instance(json.loads(order.decode())['drink'])
