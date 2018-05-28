@@ -1,2 +1,8 @@
 .idea
 venv
+*.pc
+*.pyc
+*.pyo
+__pycache__
+.adoc
+.deps
