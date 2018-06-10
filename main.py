@@ -17,7 +17,7 @@ clients = [
     Client('Fender', Sex.Male, 69, Level.OVER_EXP, store, rabbit),
     Client('Fabric', Sex.Female, 140, Level.STUPOR, store, rabbit),
     Client('Bill', Sex.Male, 75, Level.DEATH, store, rabbit),
-    Client('Bohdan', Sex.Female, 190, Level.COMA, store, rabbit)
+    Client('Bohdan', Sex.Female, 190, Level.COMA, store, rabbit),
     Client('Lemmy', Sex.Male, 75, Level.NORMAL, store, rabbit),
     Client('Ozzy', Sex.Male, 69, Level.OVER_EXP, store, rabbit),
     Client('Buttlers', Sex.Female, 140, Level.STUPOR, store, rabbit),

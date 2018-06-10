@@ -36,7 +36,7 @@ class Bar:
             Client.draw()
             exit(0)
 
-        time.sleep(0.01)
+        time.sleep(0.2)
         current_client = self.get_current_client(json.loads(order.decode())['client_name'])
         drink_tuple = self.get_drink_instance(json.loads(order.decode())['drink'])
 

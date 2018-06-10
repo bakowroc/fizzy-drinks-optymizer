@@ -11,7 +11,7 @@ from Store.Store import Store
 from config.Config import Config
 import matplotlib.pyplot as pplot
 rabbit = RabbitMQ()
-AVG_READING_TIME = 0.05
+AVG_READING_TIME = 0.1
 Sobering_timer_trigger = 1 # 1 jednostka = 1s
 SOBER_RATE_PER_HOUR = 0.016
 sober_update_rate = SOBER_RATE_PER_HOUR *Sobering_timer_trigger/3600
@@ -174,7 +174,7 @@ class Client(Thread):
         pplot.xlabel("time")
         pplot.ylabel("EBAC")
         pplot.title("EBAC chart")
-        pplot.figure(figsize=(2, 2))
+        pplot.figure(figsize=(6.40, 4.80))
 
         els = list()
         for key,value in Client.dataset.items():
